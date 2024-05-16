@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { Item, Social } = require('./model.js');
+const { addHours } = require('date-fns');
 
 // Initialize express app
 const app = express();
@@ -12,7 +14,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // MongoDB connection
-const dbURI = 'mongodb+srv://lucasdavis0830:atDHB1TMJRGKsUuW@cluster0.qyqtswq.mongodb.net/';
+const dbURI = 'mongodb+srv://lucasdavis0830:atDHB1TMJRGKsUuW@cluster0.qyqtswq.mongodb.net/test';
+// const dbURI = 'mongodb://127.0.0.1:27017/test'
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('MongoDB connected');
@@ -21,13 +24,6 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.log(err));
 
 // Define schema and model
-const Schema = mongoose.Schema;
-const itemSchema = new Schema({
-  t_id: { type: String, required: true },
-  t_name: { type: String, required: true },
-  mount: { type: Number, required: true }
-});
-const Item = mongoose.model('Item', itemSchema);
 
 // Function to insert default document
 const insertDefaultDocument = async () => {
@@ -72,17 +68,19 @@ app.get('/items/:id', async (req, res) => {
 });
 
 app.post('/items', async (req, res) => {
-  const item = new Item({
-    t_id: req.body.t_id,
-    t_name: req.body.t_name,
-    mount: req.body.mount
-  });
-  try {
-    const newItem = await item.save();
-    res.status(201).json(newItem);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  const { itemId } = req.body;
+  let item = await Item.findOne({ t_id: itemId });
+  console.log(itemId)
+  if (!item) {
+    item = new Item({ t_id: itemId, t_name: 'hello', mount: 0 });
+    item.save().then(() => {
+      return res.json({stats: 'success', item})
+    }).catch(() => {
+      return res.json({stats : 'error'})
+    })
   }
+  else return res.json({stats: 'success', item})
+  // res.json(item);
 });
 
 app.patch('/items/:id', async (req, res) => {
@@ -122,6 +120,31 @@ app.delete('/items/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+app.post('/bonous', async (req, res) => {
+
+    const { id, title } = req.body;
+    const currentDateTime = new Date();
+
+    const recentSocials = await Social.find({
+      t_id: id,
+      s_name: title,
+      s_date: { $gte: addHours(currentDateTime, -24) } // Check if the s_date is within the last 24 hours
+    });
+
+    if (recentSocials.length > 0) {
+      return res.json({ stats: 'error', message: 'You need more time' });
+    }
+    const item = await Item.findById(id);
+    item.mount = item.mount + 1000;
+    const updatedItem = await item.save();
+    social = new Social({ t_id: id, s_name: title, s_date: currentDateTime });
+    social.save().then(() => {
+      return res.json({stats: 'success'})
+    }).catch(() => {
+      return res.json({stats : 'social save error'})
+    })
+})
 
 // Start server
 app.listen(port, () => {
