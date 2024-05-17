@@ -68,11 +68,12 @@ app.get('/items/:id', async (req, res) => {
 });
 
 app.post('/items', async (req, res) => {
-  const { itemId } = req.body;
-  let item = await Item.findOne({ t_id: itemId });
-  console.log(itemId)
+  const { user } = req.body;
+  console.log(user)
+  let item = await Item.findOne({ t_id: user });
+  
   if (!item) {
-    item = new Item({ t_id: itemId, t_name: 'hello', mount: 0 });
+    item = new Item({ t_id: user, t_name: 'hello', mount: 0 });
     item.save().then(() => {
       return res.json({stats: 'success', item})
     }).catch(() => {
