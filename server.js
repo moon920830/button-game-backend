@@ -141,7 +141,7 @@ app.post('/bonous', async (req, res) => {
     const updatedItem = await item.save();
     social = new Social({ t_id: id, s_name: title, s_date: currentDateTime });
     social.save().then(() => {
-      return res.json({stats: 'success'})
+      return res.json({stats: 'success', mount: item.mount})
     }).catch(() => {
       return res.json({stats : 'social save error'})
     })
