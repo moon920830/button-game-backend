@@ -1,3 +1,4 @@
+const { Bot, session, InlineKeyboard } = require("grammy");
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -8,6 +9,46 @@ const { addHours } = require('date-fns');
 // Initialize express app
 const app = express();
 const port = process.env.PORT || 5000;
+
+const botToken = process.env.BOT_TOKEN || "6739546265:AAEjZa7_igskqY0uCBWRZ5843AHpkpnV4ZY";
+const bot = new Bot(botToken);
+
+const initial = () => {
+  return {};
+};
+
+bot.use(session({ initial }));
+
+bot.command("start", async (ctx) => {
+  const userid = ctx.from.username; // Get the Telegram user ID
+  console.log(userid)
+  const menus = new InlineKeyboard().webApp(
+    "Start",
+    "https://stackoverflow.com"
+  ).row().webApp(
+    "Click to play",
+     `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(userid)}`
+    // `http://localhost:3000/?user=${encodeURIComponent(userid)}`
+  ) 
+
+  await ctx.reply(
+    `<b>He, user! Welcome to VirtualsWorlds. Your Telegram ID is @${userid}.</b>\n\nVirtualsWorlds is a SocialFi + GameFi.\n\nYou are now the director of a crypto exchange.\nWhich one? You choose. Tap the screen, collect coins, pump up your passive income, develop your own income strategy.\nWe’ll definitely appreciate your efforts once the token is listed (the dates are coming soon).\nDon't forget about your friends — bring them to the game and get even more coins together!`,
+    {
+      reply_markup: menus,
+      parse_mode: "HTML",
+    }
+  );
+});
+
+(async () => {
+  // Delete webhook before starting the bot
+  await bot.api.deleteWebhook();
+
+  // Start bot with getUpdates (polling)
+  bot.start();
+})();
+
+
 
 // Middleware
 app.use(bodyParser.json());
