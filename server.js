@@ -17,11 +17,16 @@ const initial = () => {
   return {};
 };
 
+let inviteData = null;
+
 bot.use(session({ initial }));
 
 bot.command("start", async (ctx) => {
   const userid = ctx.from.username; // Get the Telegram user ID
-  console.log(userid)
+  const refMatch = ctx.message.text.match(/\/start\?ref=(\w+)/);
+  const ref = refMatch ? refMatch[1] : null;
+  
+  console.log(ref); 
   const menus = new InlineKeyboard().webApp(
     "Start",
     "https://stackoverflow.com"
@@ -186,7 +191,34 @@ app.post('/bonous', async (req, res) => {
     }).catch(() => {
       return res.json({stats : 'social save error'})
     })
-})
+});
+
+app.post('/sendInvite', async (req, res) => {
+  const { inviteLink, user } = req.body;
+
+  if (!inviteLink || !user) {
+      return res.status(400).json({ error: 'Missing invite link or user' });
+  }
+
+  try {
+    inviteData = { user };
+    return res.status(200).json({stats: "ok"})
+  } catch (error) {
+      console.error('Error sending invite link:', error);
+      res.status(500).json({ error: 'Failed to send invite link' });
+  }
+});
+
+bot.on('message:text', async (ctx) => {
+  // If invite data exists and the message sender is the same user who initiated the invite request
+  if (inviteData && ctx.message.from.id === inviteData.user) {
+      // Forward the message to the selected recipient
+      await bot.api.forwardMessage(inviteData.user, ctx.message.chat.id, ctx.message.message_id);
+      
+      // Reset invite data
+      inviteData = null;
+  }
+});
 
 // Start server
 app.listen(port, () => {
