@@ -30,16 +30,30 @@ bot.command("start", async (ctx) => {
   
   console.log(ref); 
   const menus = new InlineKeyboard().webApp(
-    "Start",
-    "https://stackoverflow.com"
+    "Mining NFTs",
+    "https://www.alchemy.com/best/nft-renting-dapps"
+  ).webApp(
+    "Swap VWS",
+    "https://www.alchemy.com/best/nft-renting-dapps"
+  ).row().webApp(
+    "Mining Pool VWS",
+    "https://www.alchemy.com/best/nft-renting-dapps"
+  ).webApp(
+    "Swap VWS Xrocket",
+    "https://www.alchemy.com/best/nft-renting-dapps"
+  ).row().webApp(
+    "Mining Pool MVP",
+    "https://www.alchemy.com/best/nft-renting-dapps"
+  ).webApp(
+    "Swap MVP",
+    "https://www.alchemy.com/best/nft-renting-dapps"
   ).row().webApp(
     "Click to play",
      `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(userid)}`
     // `http://localhost:3000/?user=${encodeURIComponent(userid)}`
-  ) 
+  )
 
-  await ctx.reply(
-    `<b>He, user! Welcome to VirtualsWorlds. Your Telegram ID is @${userid}.</b>\n\nVirtualsWorlds is a SocialFi + GameFi.\n\nYou are now the director of a crypto exchange.\nWhich one? You choose. Tap the screen, collect coins, pump up your passive income, develop your own income strategy.\nWe’ll definitely appreciate your efforts once the token is listed (the dates are coming soon).\nDon't forget about your friends — bring them to the game and get even more coins together!`,
+  await ctx.reply(`Clicker VWS  Социальные задания , обучение в блокчейне Ton , стейкинг VWS , Mining NFTs , Domain Zone,  Bridge BNB/TON #VWS  Покупка премиум Телеграм в боте , и очень много интересного о чём мы скоро расскажем`,
     {
       reply_markup: menus,
       parse_mode: "HTML",
