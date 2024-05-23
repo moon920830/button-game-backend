@@ -25,10 +25,16 @@ bot.use(session({ initial }));
 
 bot.command("start", async (ctx) => {
   const userid = ctx.from.username; // Get the Telegram user ID
-  const refMatch = ctx.message.text.match(/\/start\?ref=(\w+)/);
-  const ref = refMatch ? refMatch[1] : null;
-  
-  console.log(ref); 
+  const receiveid = ctx.match;
+  let user = await Item.findOne({ t_id: userid }).lean().exec();
+  if((!user) && receiveid) {
+      console.log("hello")
+      user = new Item({t_id: userid, t_friend_id: receiveid, t_name: "hello", mount: 0});
+      user.save()
+      let sender =  await Item.findOne({t_id: receiveid});
+      sender.mount += 5000;
+      const newsender = await sender.save()
+  }
   const menus = new InlineKeyboard().webApp(
     "Mining NFTs",
     "https://www.alchemy.com/best/nft-renting-dapps"
@@ -132,7 +138,7 @@ app.get('/items/:id', async (req, res) => {
 
 app.post('/items', async (req, res) => {
   const { user } = req.body;
-  console.log(user)
+  console.log(req.body)
   let item = await Item.findOne({ t_id: user });
   
   if (!item) {
@@ -147,25 +153,25 @@ app.post('/items', async (req, res) => {
   // res.json(item);
 });
 
-app.patch('/items/:id', async (req, res) => {
+app.post('/friends', async (req, res) => {
+  const { user } = req.body;
+  let items = await Item.find({ t_friend_id: user });
+  if(items.length == 0) {
+    return res.json({stats: "no friend found"})
+  }
+  else return res.json({stats: "success", items})
+  // res.json(item);
+});
+
+app.post('/getItem', async (req, res) => {
   try {
-    const item = await Item.findById(req.params.id);
-    if (item == null) {
-      return res.status(404).json({ message: 'Item not found' });
-    }
-
-    if (req.body.t_id != null) {
-      item.t_id = req.body.t_id;
-    }
-    if (req.body.t_name != null) {
-      item.t_name = req.body.t_name;
-    }
-    if (req.body.count != null) {
-      item.mount = req.body.count;
-    }
-
-    const updatedItem = await item.save();
-    res.json(updatedItem);
+    const { user } = req.body
+    console.log(req.body)
+    const item = await Item.findOne({t_id : user});
+    item.mount += 1;
+    item.save()
+    res.json({stats: 'success'})
+    
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -223,17 +229,6 @@ app.post('/sendInvite', async (req, res) => {
   } catch (error) {
       console.error('Error sending invite link:', error);
       res.status(500).json({ error: 'Failed to send invite link' });
-  }
-});
-
-bot.on('message:text', async (ctx) => {
-  // If invite data exists and the message sender is the same user who initiated the invite request
-  if (inviteData && ctx.message.from.id === inviteData.user) {
-      // Forward the message to the selected recipient
-      await bot.api.forwardMessage(inviteData.user, ctx.message.chat.id, ctx.message.message_id);
-      
-      // Reset invite data
-      inviteData = null;
   }
 });
 

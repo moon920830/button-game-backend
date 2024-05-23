@@ -13,6 +13,7 @@ const Social = mongoose.model('Social', socialSchema)
 const itemSchema = new Schema({
     t_id: { type: String, required: true },
     t_name: { type: String, required: true },
+    t_friend_id: {type: String},
     mount: { type: Number, required: true }
 });
 
