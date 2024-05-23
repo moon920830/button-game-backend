@@ -73,6 +73,7 @@ bot.command("start", async (ctx) => {
 
 // Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // MongoDB connection
