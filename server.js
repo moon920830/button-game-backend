@@ -33,8 +33,8 @@ bot.command("start", async (ctx) => {
   const menus = new InlineKeyboard()
     .webApp(
       "Play in 1 click",
-      `https://vws-frontend.vercel.app/?user=${encodeURIComponent(
-      // `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(
+      // `https://vws-frontend.vercel.app/?user=${encodeURIComponent(
+      `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(
         userid
       )}`
       // `http://localhost:3000/?user=${encodeURIComponent(userid)}`
