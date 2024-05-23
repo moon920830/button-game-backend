@@ -1,10 +1,10 @@
 const { Bot, session, InlineKeyboard } = require("grammy");
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const { Item, Social } = require('./model.js');
-const { addHours } = require('date-fns');
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const { Item, Social } = require("./model.js");
+const { addHours } = require("date-fns");
 
 // Initialize express app
 const app = express();
@@ -12,7 +12,8 @@ const port = process.env.PORT || 5000;
 
 // const botToken = process.env.BOT_TOKEN || "6739546265:AAEjZa7_igskqY0uCBWRZ5843AHpkpnV4ZY";
 
-const botToken = process.env.BOT_TOKEN || "6912028347:AAH8L9xv4fkzQEZIYkyuXaDRmnZqKmYkCpA"
+const botToken =
+  process.env.BOT_TOKEN || "6912028347:AAH8L9xv4fkzQEZIYkyuXaDRmnZqKmYkCpA";
 const bot = new Bot(botToken);
 
 const initial = () => {
@@ -35,31 +36,38 @@ bot.command("start", async (ctx) => {
       sender.mount += 5000;
       const newsender = await sender.save()
   }
-  const menus = new InlineKeyboard().webApp(
-    "Mining NFTs",
-    "https://www.alchemy.com/best/nft-renting-dapps"
-  ).webApp(
-    "Swap VWS",
-    "https://www.alchemy.com/best/nft-renting-dapps"
-  ).row().webApp(
-    "Mining Pool VWS",
-    "https://www.alchemy.com/best/nft-renting-dapps"
-  ).webApp(
-    "Swap VWS Xrocket",
-    "https://www.alchemy.com/best/nft-renting-dapps"
-  ).row().webApp(
-    "Mining Pool MVP",
-    "https://www.alchemy.com/best/nft-renting-dapps"
-  ).webApp(
-    "Swap MVP",
-    "https://www.alchemy.com/best/nft-renting-dapps"
-  ).row().webApp(
-    "Click to play",
-     `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(userid)}`
-    // `http://localhost:3000/?user=${encodeURIComponent(userid)}`
-  )
+  const menus = new InlineKeyboard()
+    .webApp(
+      "Play in 1 click",
+      // `https://vws-frontend.vercel.app/?user=${encodeURIComponent(
+      `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(
+        userid
+      )}`
+      // `http://localhost:3000/?user=${encodeURIComponent(userid)}`
+    )
+    .row()
+    .url("Subscribe to the channel", `https://t.me/MagicVipClub`)
+    .row()
+    .text("How to earn from the game", `howToEarn`)
+    .row()
+    .url("Mining NFTs", "https://getgems.io/virtualsworlds")
+    .url("Swap VWS", "https://dedust.io/swap/TON/VWS")
+    .row()
+    .url("Mining Pool VWS", "https://dedust.io/pools/TON/VWS")
+    .url(
+      "Swap VWS Xrocket",
+      "https://t.me/tonRocketBot/cex?startapp=trade-VWS-TON"
+    )
+    .row()
+    .url(
+      "Mining Pool MVP",
+      "https://dedust.io/pools/EQD4DpRTiPUWwKn_n0YXETo7RWODYqwfe_aarA63s-A7atzj"
+    )
+    .url("Swap MVP", "https://dedust.io/swap/TON/MVP")
+    .row();
 
-  await ctx.reply(`Clicker VWS  Социальные задания , обучение в блокчейне Ton , стейкинг VWS , Mining NFTs , Domain Zone,  Bridge BNB/TON #VWS  Покупка премиум Телеграм в боте , и очень много интересного о чём мы скоро расскажем`,
+  await ctx.reply(
+    `Hello, @${userid}! Welcome to VWS Worlds.\nYou are now the director of a crypto exchange.\nWhich one? You choose. Tap the screen, collect coins, pump up your passive, develop your own income strategy.\nWe’ll definitely appreciate your efforts once the token is listed (the dates are coming soon).\nDon't forget about your friends — bring them to the game and get even more coins together!`,
     {
       reply_markup: menus,
       parse_mode: "HTML",
@@ -75,47 +83,47 @@ bot.command("start", async (ctx) => {
   bot.start();
 })();
 
-
-
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // MongoDB connection
-const dbURI = 'mongodb+srv://lucasdavis0830:atDHB1TMJRGKsUuW@cluster0.qyqtswq.mongodb.net/test';
+const dbURI =
+  "mongodb+srv://lucasdavis0830:atDHB1TMJRGKsUuW@cluster0.qyqtswq.mongodb.net/test";
 // const dbURI = 'mongodb://127.0.0.1:27017/test'
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose
+  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log('MongoDB connected');
+    console.log("MongoDB connected");
     insertDefaultDocument();
   })
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
 // Define schema and model
 
 // Function to insert default document
 const insertDefaultDocument = async () => {
   try {
-    const existingItem = await Item.findOne({ t_id: 'telegram' });
+    const existingItem = await Item.findOne({ t_id: "telegram" });
     if (!existingItem) {
       const defaultItem = new Item({
-        t_id: 'telegram',
-        t_name: 'Team Mark(SEO)',
-        mount: 0
+        t_id: "telegram",
+        t_name: "Team Mark(SEO)",
+        mount: 0,
       });
       await defaultItem.save();
-      console.log('Default document inserted');
+      console.log("Default document inserted");
     } else {
-      console.log('Default document already exists');
+      console.log("Default document already exists");
     }
   } catch (err) {
-    console.log('Error checking/inserting default document:', err);
+    console.log("Error checking/inserting default document:", err);
   }
 };
 
 // Routes
-app.get('/items', async (req, res) => {
+app.get("/items", async (req, res) => {
   try {
     const items = await Item.find();
     res.json(items);
@@ -124,11 +132,11 @@ app.get('/items', async (req, res) => {
   }
 });
 
-app.get('/items/:id', async (req, res) => {
+app.get("/items/:id", async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
     if (item == null) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(404).json({ message: "Item not found" });
     }
     res.json(item);
   } catch (err) {
@@ -136,20 +144,22 @@ app.get('/items/:id', async (req, res) => {
   }
 });
 
-app.post('/items', async (req, res) => {
+app.post("/items", async (req, res) => {
   const { user } = req.body;
-  console.log(req.body)
+  console.log(user);
   let item = await Item.findOne({ t_id: user });
-  
+
   if (!item) {
-    item = new Item({ t_id: user, t_name: 'hello', mount: 0 });
-    item.save().then(() => {
-      return res.json({stats: 'success', item})
-    }).catch(() => {
-      return res.json({stats : 'error'})
-    })
-  }
-  else return res.json({stats: 'success', item})
+    item = new Item({ t_id: user, t_name: "hello", mount: 0 });
+    item
+      .save()
+      .then(() => {
+        return res.json({ stats: "success", item });
+      })
+      .catch(() => {
+        return res.json({ stats: "error" });
+      });
+  } else return res.json({ stats: "success", item });
   // res.json(item);
 });
 
@@ -177,58 +187,60 @@ app.post('/getItem', async (req, res) => {
   }
 });
 
-app.delete('/items/:id', async (req, res) => {
+app.delete("/items/:id", async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
     if (item == null) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(404).json({ message: "Item not found" });
     }
 
     await item.remove();
-    res.json({ message: 'Deleted Item' });
+    res.json({ message: "Deleted Item" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-app.post('/bonous', async (req, res) => {
+app.post("/bonous", async (req, res) => {
+  const { id, title } = req.body;
+  const currentDateTime = new Date();
 
-    const { id, title } = req.body;
-    const currentDateTime = new Date();
+  const recentSocials = await Social.find({
+    t_id: id,
+    s_name: title,
+    s_date: { $gte: addHours(currentDateTime, -24) }, // Check if the s_date is within the last 24 hours
+  });
 
-    const recentSocials = await Social.find({
-      t_id: id,
-      s_name: title,
-      s_date: { $gte: addHours(currentDateTime, -24) } // Check if the s_date is within the last 24 hours
-    });
-
-    if (recentSocials.length > 0) {
-      return res.json({ stats: 'error', message: 'You need more time' });
-    }
-    const item = await Item.findById(id);
-    item.mount = item.mount + 1000;
-    const updatedItem = await item.save();
-    social = new Social({ t_id: id, s_name: title, s_date: currentDateTime });
-    social.save().then(() => {
-      return res.json({stats: 'success', mount: item.mount})
-    }).catch(() => {
-      return res.json({stats : 'social save error'})
+  if (recentSocials.length > 0) {
+    return res.json({ stats: "error", message: "You need more time" });
+  }
+  const item = await Item.findById(id);
+  item.mount = item.mount + 1000;
+  const updatedItem = await item.save();
+  social = new Social({ t_id: id, s_name: title, s_date: currentDateTime });
+  social
+    .save()
+    .then(() => {
+      return res.json({ stats: "success", mount: item.mount });
     })
+    .catch(() => {
+      return res.json({ stats: "social save error" });
+    });
 });
 
-app.post('/sendInvite', async (req, res) => {
+app.post("/sendInvite", async (req, res) => {
   const { inviteLink, user } = req.body;
 
   if (!inviteLink || !user) {
-      return res.status(400).json({ error: 'Missing invite link or user' });
+    return res.status(400).json({ error: "Missing invite link or user" });
   }
 
   try {
     inviteData = { user };
-    return res.status(200).json({stats: "ok"})
+    return res.status(200).json({ stats: "ok" });
   } catch (error) {
-      console.error('Error sending invite link:', error);
-      res.status(500).json({ error: 'Failed to send invite link' });
+    console.error("Error sending invite link:", error);
+    res.status(500).json({ error: "Failed to send invite link" });
   }
 });
 
