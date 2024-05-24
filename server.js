@@ -74,6 +74,7 @@ bot.command("start", async (ctx) => {
 });
 
 bot.on("callback_query:data", async (ctx) => {
+  const userid = ctx.from.username; // Get the Telegram user ID
   const data = ctx.callbackQuery.data;
   switch (data) {
     case "howToEarn":
