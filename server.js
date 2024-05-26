@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 // const botToken = process.env.BOT_TOKEN || "6739546265:AAEjZa7_igskqY0uCBWRZ5843AHpkpnV4ZY";
 
 const botToken =
-  process.env.BOT_TOKEN || "6912028347:AAH8L9xv4fkzQEZIYkyuXaDRmnZqKmYkCpA";
+  process.env.BOT_TOKEN || "6871842495:AAHym7COX_CPw3tT4MFls0q5ZKNIc9MfqI0";
 const bot = new Bot(botToken);
 
 const initial = () => {
@@ -39,7 +39,7 @@ bot.command("start", async (ctx) => {
   const menus = new InlineKeyboard()
     .webApp(
       "Play in 1 click",
-      `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(
+      `https://vws-fe.vercel.app/?user=${encodeURIComponent(
         userid
       )}`
     )
@@ -80,7 +80,7 @@ bot.on("callback_query:data", async (ctx) => {
     case "howToEarn":
       const menus = new InlineKeyboard().webApp(
         "Play in 1 click",
-        `https://button-game-frontend.vercel.app/?user=${encodeURIComponent(
+        `https://vws-fe.vercel.app/user=${encodeURIComponent(
           userid
         )}`
       )
@@ -238,7 +238,7 @@ app.post("/bonous", async (req, res) => {
     return res.json({ stats: "error", message: "You need more time" });
   }
   const item = await Item.findById(id);
-  item.mount = item.mount + 1000;
+  item.mount = item.mount + 10000;
   const updatedItem = await item.save();
   social = new Social({ t_id: id, s_name: title, s_date: currentDateTime });
   social
