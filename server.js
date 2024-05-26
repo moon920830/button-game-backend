@@ -13,7 +13,8 @@ const port = process.env.PORT || 5000;
 // const botToken = process.env.BOT_TOKEN || "6739546265:AAEjZa7_igskqY0uCBWRZ5843AHpkpnV4ZY";
 
 const botToken =
-  process.env.BOT_TOKEN || "6871842495:AAHym7COX_CPw3tT4MFls0q5ZKNIc9MfqI0";
+  // process.env.BOT_TOKEN || "6871842495:AAHym7COX_CPw3tT4MFls0q5ZKNIc9MfqI0";
+  process.env.BOT_TOKEN || "6912028347:AAH8L9xv4fkzQEZIYkyuXaDRmnZqKmYkCpA";
 const bot = new Bot(botToken);
 
 const initial = () => {
