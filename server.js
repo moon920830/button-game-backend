@@ -81,7 +81,7 @@ bot.on("callback_query:data", async (ctx) => {
     case "howToEarn":
       const menus = new InlineKeyboard().webApp(
         "Play in 1 click",
-        `https://vws-fe.vercel.app/user=${encodeURIComponent(
+        `https://vws-fe.vercel.app/?user=${encodeURIComponent(
           userid
         )}`
       )
