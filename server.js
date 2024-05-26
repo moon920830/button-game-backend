@@ -201,6 +201,8 @@ app.post('/getItem', async (req, res) => {
     const { user } = req.body
     console.log(req.body)
     const item = await Item.findOne({t_id : user});
+    if (item == null)
+      return res.json({stats: "no item"})
     item.mount += 1;
     item.save()
     res.json({stats: 'success'})
